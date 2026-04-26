@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Hey Ya! — App inteligente de gestão de rotina com IA">
+  <title>Hey Ya! — Gestão Inteligente de Rotina</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- ===== LOGIN SCREEN ===== -->
+  <div class="login-screen" id="loginScreen">
+    <canvas id="loginCanvas"></canvas>
+    <div class="login-box">
+      <h1>Hey Ya!</h1>
+      <p class="subtitle">Gestão Inteligente de Rotina</p>
+      <form id="loginForm" onsubmit="return false;">
+        <div class="form-group">
+          <label>Usuário</label>
+          <input class="form-input" type="text" id="loginUser" placeholder="Digite seu usuário" autocomplete="off">
+        </div>
+        <div class="form-group">
+          <label>Senha</label>
+          <input class="form-input" type="password" id="loginPass" placeholder="••••••••">
+        </div>
+        <button class="btn-primary" type="submit" id="loginBtn">Entrar</button>
+        <div class="login-error" id="loginError"></div>
+      </form>
+      <p class="login-hint">Credenciais mockadas: <code>admin</code> / <code>1234</code></p>
+    </div>
+  </div>
+
+  <!-- ===== APP CONTAINER ===== -->
+  <div class="app-container" id="appContainer">
+
+    <!-- Mobile Header -->
+    <div class="mobile-header">
+      <button class="mobile-toggle" id="mobileToggle">☰</button>
+      <span class="sidebar-logo">Hey Ya!</span>
+    </div>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo">Hey Ya!</div>
+        <div class="sidebar-user">
+          <div class="sidebar-avatar" id="userAvatar">A</div>
+          <div class="sidebar-user-info">
+            <div class="name" id="userName">Admin</div>
+            <div class="level" id="userLevel">🏆 Nível 1</div>
+          </div>
+        </div>
+      </div>
+      <nav class="sidebar-nav">
+        <button class="nav-item active" data-page="dashboard" onclick="navigateTo('dashboard')">
+          <span class="nav-icon">📊</span> Dashboard
+        </button>
+        <button class="nav-item" data-page="tasks" onclick="navigateTo('tasks')">
+          <span class="nav-icon">📋</span> Tarefas
+          <span class="nav-badge" id="taskCount">0</span>
+        </button>
+        <button class="nav-item" data-page="schedule" onclick="navigateTo('schedule')">
+          <span class="nav-icon">⚙️</span> Escala
+        </button>
+        <button class="nav-item" data-page="ai" onclick="navigateTo('ai')">
+          <span class="nav-icon">🤖</span> Sugestões IA
+        </button>
+        <button class="nav-item" data-page="gamification" onclick="navigateTo('gamification')">
+          <span class="nav-icon">🏆</span> Gamificação
+        </button>
+      </nav>
+      <div class="sidebar-footer">
+        <button class="btn-logout" onclick="logout()">🚪 Sair da conta</button>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+
+      <!-- ===== DASHBOARD ===== -->
+      <div class="page active" id="page-dashboard">
+        <div class="page-header">
+          <h1>Dashboard</h1>
+          <p>Visão geral da sua produtividade de hoje</p>
+        </div>
+        <div class="stats-grid">
+          <div class="glass-card stat-card">
+            <div class="stat-value" id="statTotal">0</div>
+            <div class="stat-label">Tarefas Totais</div>
+          </div>
+          <div class="glass-card stat-card">
+            <div class="stat-value" id="statDone">0</div>
+            <div class="stat-label">Concluídas</div>
+          </div>
+          <div class="glass-card stat-card">
+            <div class="stat-value" id="statPending">0</div>
+            <div class="stat-label">Pendentes</div>
+          </div>
+          <div class="glass-card stat-card">
+            <div class="stat-value" id="statPoints">0</div>
+            <div class="stat-label">Pontos XP</div>
+          </div>
+        </div>
+        <div class="dash-grid">
+          <div class="glass-card today-tasks">
+            <h3>📋 Tarefas de Hoje</h3>
+            <div id="dashTasks"></div>
+          </div>
+          <div>
+            <div class="glass-card gamif-card" style="margin-bottom:var(--space-xl);">
+              <h3>🏆 Progresso</h3>
+              <div class="xp-bar-container">
+                <div class="xp-bar-bg"><div class="xp-bar-fill" id="dashXpBar" style="width:0%"></div></div>
+                <div class="xp-text"><span id="dashXpText">0 / 100 XP</span><span id="dashLevelText">Nível 1</span></div>
+              </div>
+              <div class="badges-row" id="dashBadges"></div>
+            </div>
+            <div class="glass-card ai-suggestions">
+              <h3>🤖 Dica da IA</h3>
+              <p id="dashAiTip" style="font-size:0.85rem; color:var(--text-secondary); line-height:1.7;"></p>
+            </div>
+          </div>
+          <div class="glass-card dash-grid-full">
+            <h3 style="font-size:1rem; font-weight:700; margin-bottom:var(--space-lg);">📊 Tempo por Área (Última Semana)</h3>
+            <div class="chart-container">
+              <div class="bar-chart" id="barChart"></div>
+            </div>
+            <div class="chart-legend">
+              <div class="chart-legend-item"><div class="chart-legend-dot" style="background:var(--accent-primary)"></div> Estudo</div>
+              <div class="chart-legend-item"><div class="chart-legend-dot" style="background:var(--accent-secondary)"></div> Trabalho</div>
+              <div class="chart-legend-item"><div class="chart-legend-dot" style="background:var(--success)"></div> Saúde</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== TASKS ===== -->
+      <div class="page" id="page-tasks">
+        <div class="page-header">
+          <h1>Gestão de Tarefas</h1>
+          <p>Crie, edite e organize suas tarefas — CRUD completo (UC2-UC5)</p>
+        </div>
+        <div class="tasks-toolbar">
+          <button class="btn-add-task" onclick="openTaskModal()">+ Nova Tarefa</button>
+          <button class="filter-btn active" data-filter="all" onclick="filterTasks('all',this)">Todas</button>
+          <button class="filter-btn" data-filter="pendente" onclick="filterTasks('pendente',this)">Pendentes</button>
+          <button class="filter-btn" data-filter="concluida" onclick="filterTasks('concluida',this)">Concluídas</button>
+          <button class="filter-btn" data-filter="estudo" onclick="filterTasks('estudo',this)">📚 Estudo</button>
+          <button class="filter-btn" data-filter="trabalho" onclick="filterTasks('trabalho',this)">💼 Trabalho</button>
+          <button class="filter-btn" data-filter="saude" onclick="filterTasks('saude',this)">❤️ Saúde</button>
+        </div>
+        <div class="tasks-list" id="tasksList"></div>
+      </div>
+
+      <!-- ===== SCHEDULE ===== -->
+      <div class="page" id="page-schedule">
+        <div class="page-header">
+          <h1>Configurar Escala de Trabalho</h1>
+          <p>Defina seu regime para que a IA adapte sugestões (UC1)</p>
+        </div>
+        <div class="schedule-options" id="scheduleOptions">
+          <div class="glass-card schedule-card" data-schedule="12x36" onclick="selectSchedule('12x36',this)">
+            <div class="schedule-icon">🏥</div>
+            <h3>12×36</h3>
+            <p>12 horas de trabalho, 36 de descanso</p>
+          </div>
+          <div class="glass-card schedule-card" data-schedule="5x2" onclick="selectSchedule('5x2',this)">
+            <div class="schedule-icon">🏢</div>
+            <h3>5×2</h3>
+            <p>5 dias úteis, 2 de folga (seg-sex)</p>
+          </div>
+          <div class="glass-card schedule-card" data-schedule="6x1" onclick="selectSchedule('6x1',this)">
+            <div class="schedule-icon">⚡</div>
+            <h3>6×1</h3>
+            <p>6 dias de trabalho, 1 folga semanal</p>
+          </div>
+          <div class="glass-card schedule-card" data-schedule="plantao" onclick="selectSchedule('plantao',this)">
+            <div class="schedule-icon">🚑</div>
+            <h3>Plantão</h3>
+            <p>Plantões esporádicos, escala variável</p>
+          </div>
+          <div class="glass-card schedule-card" data-schedule="flexivel" onclick="selectSchedule('flexivel',this)">
+            <div class="schedule-icon">🎯</div>
+            <h3>Flexível</h3>
+            <p>Freelancer / horários flexíveis</p>
+          </div>
+        </div>
+        <div class="schedule-status glass-card" id="scheduleStatus" style="margin-top:var(--space-2xl);">
+          <h3 style="font-size:1rem; font-weight:700; margin-bottom:var(--space-sm);">📋 Status da Escala</h3>
+          <p id="scheduleStatusText" style="color:var(--text-secondary); font-size:0.9rem;">Nenhuma escala configurada ainda.</p>
+        </div>
+      </div>
+
+      <!-- ===== AI ===== -->
+      <div class="page" id="page-ai">
+        <div class="page-header">
+          <h1>Sugestões de IA</h1>
+          <p>Recomendações personalizadas baseadas na sua rotina (UC8, UC10)</p>
+        </div>
+        <button class="btn-generate" id="btnGenerate" onclick="generateAISuggestions()">🤖 Gerar Sugestões Inteligentes</button>
+        <div id="aiSuggestionsList"></div>
+        <div class="glass-card" style="margin-top:var(--space-2xl); padding:var(--space-xl);">
+          <h4 style="font-size:0.9rem; font-weight:600; margin-bottom:var(--space-sm); color:var(--text-muted);">🔒 Privacidade (RN03)</h4>
+          <p style="font-size:0.8rem; color:var(--text-muted); line-height:1.6;">Nenhuma informação pessoal identificável (PII) é enviada. Apenas o contexto das tarefas e sua escala são processados.</p>
+        </div>
+      </div>
+
+      <!-- ===== GAMIFICATION ===== -->
+      <div class="page" id="page-gamification">
+        <div class="page-header">
+          <h1>Gamificação</h1>
+          <p>Seus pontos, nível e conquistas (UC9)</p>
+        </div>
+        <div class="glass-card gamif-header">
+          <div class="gamif-level" id="gamifLevel">1</div>
+          <div class="gamif-title" id="gamifTitle">Iniciante</div>
+          <div class="gamif-points" id="gamifPoints">0 pontos XP</div>
+          <div class="xp-bar-container" style="max-width:400px; margin:var(--space-lg) auto 0;">
+            <div class="xp-bar-bg"><div class="xp-bar-fill" id="gamifXpBar" style="width:0%"></div></div>
+            <div class="xp-text"><span id="gamifXpText">0 / 100 XP</span><span>Próximo nível</span></div>
+          </div>
+        </div>
+        <h3 style="font-size:1.1rem; font-weight:700; margin-bottom:var(--space-lg);">🎖️ Conquistas</h3>
+        <div class="badges-grid" id="badgesGrid"></div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- ===== TASK MODAL ===== -->
+  <div class="modal-overlay" id="taskModal">
+    <div class="modal">
+      <h2 id="modalTitle">Nova Tarefa</h2>
+      <form id="taskForm" onsubmit="return false;">
+        <input type="hidden" id="taskEditId">
+        <div class="form-group">
+          <label>Título</label>
+          <input class="form-input" id="taskTitleInput" placeholder="Ex: Estudar Java Collections" required>
+        </div>
+        <div class="form-group">
+          <label>Descrição</label>
+          <textarea class="form-textarea" id="taskDescInput" placeholder="Detalhes da tarefa..."></textarea>
+        </div>
+        <div class="form-group">
+          <label>Categoria</label>
+          <select class="form-select" id="taskCatInput">
+            <option value="estudo">📚 Estudo</option>
+            <option value="trabalho">💼 Trabalho</option>
+            <option value="saude">❤️ Saúde</option>
+            <option value="pessoal">🌟 Pessoal</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Prioridade</label>
+          <select class="form-select" id="taskPriorityInput">
+            <option value="baixa">🟢 Baixa</option>
+            <option value="media">🟡 Média</option>
+            <option value="alta">🔴 Alta</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Prazo</label>
+          <input class="form-input" type="date" id="taskDeadlineInput">
+        </div>
+        <div class="rn-warning" id="rnWarning">⚠️ RN01: Você já possui 3 tarefas de alta prioridade hoje. A IA recomenda reduzir para prevenir burnout.</div>
+        <div class="modal-actions">
+          <button class="btn-secondary" type="button" onclick="closeTaskModal()">Cancelar</button>
+          <button class="btn-primary" type="submit" id="taskSubmitBtn">Criar Tarefa</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
