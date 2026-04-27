@@ -46,7 +46,7 @@ function saveData(key, data) { localStorage.setItem('heyya_'+key, JSON.stringify
 
 function getTasks() { return loadData('tasks', null) || JSON.parse(JSON.stringify(DEFAULT_TASKS)); }
 function saveTasks(tasks) { saveData('tasks', tasks); }
-function getUserData() { return loadData('user', { pontos: 0, nivel: 1, escala: null, aiUsed: false, totalCreated: 5, totalDone: 1 }); }
+function getUserData() { return loadData('user', { pontos: 170, nivel: 2, escala: '5x2', aiUsed: true, totalCreated: 8, totalDone: 4 }); }
 function saveUserData(data) { saveData('user', data); }
 
 // ===== INIT =====
@@ -56,6 +56,8 @@ document.addEventListener('DOMContentLoaded', () => {
   initMobile();
   // Check if already logged in
   if (loadData('loggedIn', false)) showApp();
+  // Start mascot routine
+  initMascot();
 });
 
 // ===== LOGIN =====
@@ -78,13 +80,15 @@ function initLogin() {
 
 function showApp() {
   document.getElementById('loginScreen').style.display = 'none';
-  document.getElementById('appContainer').classList.add('active');
+  document.getElementById('appContainer').classList.remove('hidden');
+  document.getElementById('appContainer').classList.add('flex');
   refreshAll();
 }
 
 function logout() {
   saveData('loggedIn', false);
-  document.getElementById('appContainer').classList.remove('active');
+  document.getElementById('appContainer').classList.add('hidden');
+  document.getElementById('appContainer').classList.remove('flex');
   document.getElementById('loginScreen').style.display = '';
   document.getElementById('loginUser').value = '';
   document.getElementById('loginPass').value = '';
@@ -97,8 +101,11 @@ function navigateTo(page) {
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   document.querySelector(`.nav-item[data-page="${page}"]`).classList.add('active');
   // Close mobile sidebar
-  document.getElementById('sidebar').classList.remove('open');
-  document.getElementById('sidebarOverlay').classList.remove('active');
+  // Close mobile sidebar
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('sidebarOverlay');
+  if (sidebar) sidebar.classList.add('-translate-x-full');
+  if (overlay) overlay.classList.remove('active');
   // Refresh page data
   if (page === 'dashboard') refreshDashboard();
   if (page === 'tasks') renderTasks();
@@ -109,11 +116,11 @@ window.navigateTo = navigateTo;
 
 function initMobile() {
   document.getElementById('mobileToggle')?.addEventListener('click', () => {
-    document.getElementById('sidebar').classList.toggle('open');
+    document.getElementById('sidebar').classList.toggle('-translate-x-full');
     document.getElementById('sidebarOverlay').classList.toggle('active');
   });
   document.getElementById('sidebarOverlay')?.addEventListener('click', () => {
-    document.getElementById('sidebar').classList.remove('open');
+    document.getElementById('sidebar').classList.add('-translate-x-full');
     document.getElementById('sidebarOverlay').classList.remove('active');
   });
 }
@@ -152,13 +159,17 @@ function refreshDashboard() {
     container.innerHTML = '<div class="empty-state"><div class="empty-icon">📭</div><p>Nenhuma tarefa para hoje</p></div>';
   } else {
     container.innerHTML = todayTasks.map(t => `
-      <div class="mini-task ${t.status==='concluida'?'done':''}" onclick="toggleTaskStatus(${t.id})">
-        <div class="mini-task-check"></div>
-        <div class="mini-task-info">
-          <div class="mini-task-title">${esc(t.titulo)}</div>
-          <div class="mini-task-meta">${catLabel(t.categoria)}</div>
+      <div class="flex items-center gap-4 p-4 bg-black rounded-2xl mb-2 active:bg-white/5 transition-colors" onclick="toggleTaskStatus(${t.id})">
+        <div class="w-6 h-6 rounded-full border-2 border-gray-800 flex items-center justify-center ${t.status==='concluida'?'bg-blue-500 border-transparent':''}">
+          ${t.status==='concluida'?'<span class="text-white text-[10px]">✓</span>':''}
         </div>
-        <span class="mini-task-priority priority-${t.prioridade}">${t.prioridade}</span>
+        <div class="flex-1">
+          <div class="text-sm font-semibold text-white ${t.status==='concluida'?'line-through opacity-50':''}">${esc(t.titulo)}</div>
+          <div class="text-[10px] text-gray-500 mt-0.5">${catLabel(t.categoria)}</div>
+        </div>
+        <div class="text-[10px] font-black uppercase tracking-wider ${t.prioridade==='alta'?'text-red-500':t.prioridade==='media'?'text-yellow-500':'text-green-500'}">
+          ${t.prioridade}
+        </div>
       </div>
     `).join('');
   }
@@ -223,7 +234,7 @@ function renderTasks() {
         <div class="task-desc">${esc(t.descricao)}</div>
         <div class="task-tags">
           <span class="task-tag tag-${t.categoria}">${catLabel(t.categoria)}</span>
-          <span class="mini-task-priority priority-${t.prioridade}">${t.prioridade}</span>
+          <span class="mini-task-priority priority-${t.prioridade}">${t.prioridade.toUpperCase()}</span>
           ${t.prazo ? `<span style="font-size:0.7rem; color:var(--text-muted);">📅 ${formatDate(t.prazo)}</span>` : ''}
         </div>
       </div>
@@ -526,6 +537,70 @@ function initLoginCanvas() {
 
   resize(); create(); draw();
   window.addEventListener('resize', () => { resize(); create(); });
+}
+
+// ===== MASCOT LOGIC =====
+function initMascot() {
+  setInterval(() => {
+    // Check if on login screen or app screen
+    const isLogin = document.getElementById('loginScreen').style.display !== 'none';
+    if (Math.random() > 0.4) { // 60% chance for testing
+      if (isLogin) triggerLoginMascot();
+      else triggerMascot();
+    }
+  }, 5000); // Check every 5s
+}
+
+function triggerLoginMascot() {
+  const container = document.getElementById('loginMascot');
+  const video = document.getElementById('loginMascotVideo');
+  if (!container || !video) return;
+
+  video.play();
+  container.style.left = window.innerWidth + 'px';
+
+  setTimeout(() => {
+    container.style.transition = 'none';
+    container.style.left = '-250px';
+    video.pause();
+    video.currentTime = 0;
+    setTimeout(() => {
+      container.style.transition = 'all 3000ms ease-linear';
+    }, 50);
+  }, 3500);
+}
+
+function triggerMascot() {
+  const container = document.getElementById('mascotContainer');
+  const video = document.getElementById('mascotVideo');
+  if (!container || !video) return;
+
+  video.play();
+  container.style.left = window.innerWidth + 'px';
+
+  setTimeout(() => {
+    container.style.transition = 'none';
+    container.style.left = '-250px';
+    video.pause();
+    video.currentTime = 0;
+    setTimeout(() => {
+      container.style.transition = 'all 4000ms ease-linear';
+    }, 50);
+  }, 4500);
+}
+
+function triggerCapAnimation() {
+  const container = document.getElementById('capContainer');
+  const video = document.getElementById('capVideo');
+  if (!container || !video) return;
+
+  container.classList.remove('hidden');
+  video.currentTime = 0;
+  video.play();
+
+  setTimeout(() => {
+    container.classList.add('hidden');
+  }, 3000); // Duration of the bottle cap video
 }
 
 // ===== HELPERS =====

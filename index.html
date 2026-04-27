@@ -6,6 +6,23 @@
   <meta name="description" content="Hey Ya! — App inteligente de gestão de rotina com IA">
   <title>Hey Ya! — Gestão Inteligente de Rotina</title>
   <link rel="stylesheet" href="css/styles.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'bg-primary': '#0a0a0f',
+            'bg-secondary': '#12121a',
+            'accent-purple': '#8b5cf6',
+            'accent-green': '#10b981',
+            'accent-orange': '#f59e0b',
+            'accent-blue': '#0ea5e9',
+          }
+        }
+      }
+    }
+  </script>
 </head>
 <body>
 
@@ -32,52 +49,60 @@
   </div>
 
   <!-- ===== APP CONTAINER ===== -->
-  <div class="app-container" id="appContainer">
+  <div class="hidden bg-black min-h-screen flex flex-col md:flex-row" id="appContainer">
 
     <!-- Mobile Header -->
-    <div class="mobile-header">
-      <button class="mobile-toggle" id="mobileToggle">☰</button>
-      <span class="sidebar-logo">Hey Ya!</span>
+    <div class="md:hidden flex items-center gap-4 p-4 bg-black sticky top-0 z-50">
+      <button class="text-white text-2xl" id="mobileToggle">☰</button>
+      <span class="text-white text-lg font-bold flex items-center gap-2">
+        <span class="w-2 h-6 bg-gradient-to-b from-green-400 via-blue-500 to-purple-600 rounded-full"></span>
+        Dashboard
+      </span>
     </div>
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
     <!-- Sidebar -->
-    <aside class="sidebar" id="sidebar">
-      <div class="sidebar-header">
-        <div class="sidebar-logo">Hey Ya!</div>
-        <div class="sidebar-user">
-          <div class="sidebar-avatar" id="userAvatar">A</div>
-          <div class="sidebar-user-info">
-            <div class="name" id="userName">Admin</div>
-            <div class="level" id="userLevel">🏆 Nível 1</div>
+    <aside class="sidebar fixed inset-y-0 left-0 w-72 bg-[#0d0d15] z-[100] transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out border-r border-white/5" id="sidebar">
+      <div class="p-8 border-b border-white/5">
+        <div class="text-2xl font-black text-purple-500 mb-6">Hey Ya!</div>
+        <div class="flex items-center gap-4">
+          <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center text-xl font-bold text-white shadow-lg" id="userAvatar">A</div>
+          <div class="flex-1">
+            <div class="text-lg font-bold text-white leading-tight" id="userName">Admin</div>
+            <div class="text-xs text-blue-400 font-semibold" id="userLevel">🏆 Nível 1 — Iniciante</div>
           </div>
         </div>
       </div>
-      <nav class="sidebar-nav">
-        <button class="nav-item active" data-page="dashboard" onclick="navigateTo('dashboard')">
-          <span class="nav-icon">📊</span> Dashboard
+      
+      <nav class="flex-1 px-4 py-6 overflow-y-auto">
+        <button class="nav-item w-full flex items-center gap-4 px-6 py-4 rounded-3xl text-gray-400 font-medium transition-all duration-200 active mb-2" data-page="dashboard" onclick="navigateTo('dashboard')">
+          <span class="text-xl">📊</span> Dashboard
         </button>
-        <button class="nav-item" data-page="tasks" onclick="navigateTo('tasks')">
-          <span class="nav-icon">📋</span> Tarefas
-          <span class="nav-badge" id="taskCount">0</span>
+        <button class="nav-item w-full flex items-center gap-4 px-6 py-4 rounded-3xl text-gray-400 font-medium transition-all duration-200 mb-2" data-page="tasks" onclick="navigateTo('tasks')">
+          <span class="text-xl">📋</span> Tarefas
+          <span class="ml-auto bg-purple-500 text-white text-[10px] px-2 py-0.5 rounded-full" id="taskCount">0</span>
         </button>
-        <button class="nav-item" data-page="schedule" onclick="navigateTo('schedule')">
-          <span class="nav-icon">⚙️</span> Escala
+        <button class="nav-item w-full flex items-center gap-4 px-6 py-4 rounded-3xl text-gray-400 font-medium transition-all duration-200 mb-2" data-page="schedule" onclick="navigateTo('schedule')">
+          <span class="text-xl">⚙️</span> Escala
         </button>
-        <button class="nav-item" data-page="ai" onclick="navigateTo('ai')">
-          <span class="nav-icon">🤖</span> Sugestões IA
+        <button class="nav-item w-full flex items-center gap-4 px-6 py-4 rounded-3xl text-gray-400 font-medium transition-all duration-200 mb-2" data-page="ai" onclick="navigateTo('ai')">
+          <span class="text-xl">🤖</span> Sugestões IA
         </button>
-        <button class="nav-item" data-page="gamification" onclick="navigateTo('gamification')">
-          <span class="nav-icon">🏆</span> Gamificação
+        <button class="nav-item w-full flex items-center gap-4 px-6 py-4 rounded-3xl text-gray-400 font-medium transition-all duration-200 mb-2" data-page="gamification" onclick="navigateTo('gamification')">
+          <span class="text-xl">🏆</span> Gamificação
         </button>
       </nav>
-      <div class="sidebar-footer">
-        <button class="btn-logout" onclick="logout()">🚪 Sair da conta</button>
+
+      <div class="p-6 border-t border-white/5">
+        <hr class="border-white/5 mb-4">
+        <button class="w-full flex items-center gap-4 px-6 py-3 text-gray-500 font-medium hover:text-red-400 transition-colors" onclick="logout()">
+          <span class="text-xl">🚪</span> Sair
+        </button>
       </div>
     </aside>
 
     <!-- Main Content -->
-    <main class="main-content">
+    <main class="flex-1 md:ml-72 min-h-screen bg-black p-4 pt-0 md:pt-12">
 
       <!-- ===== DASHBOARD ===== -->
       <div class="page active" id="page-dashboard">
@@ -85,24 +110,24 @@
           <h1>Dashboard</h1>
           <p>Visão geral da sua produtividade de hoje</p>
         </div>
-        <div class="stats-grid">
-          <div class="glass-card stat-card">
-            <div class="stat-value" id="statTotal">0</div>
-            <div class="stat-label">Tarefas Totais</div>
+          <div class="grid grid-cols-4 gap-2 mb-6">
+            <div class="bg-bg-secondary p-3 rounded-2xl flex flex-col items-center justify-center text-center">
+              <span class="text-purple-500 text-xl font-bold" id="statTotal">0</span>
+              <span class="text-[10px] text-gray-500 uppercase font-medium">Total</span>
+            </div>
+            <div class="bg-bg-secondary p-3 rounded-2xl flex flex-col items-center justify-center text-center">
+              <span class="text-green-500 text-xl font-bold" id="statDone">0</span>
+              <span class="text-[10px] text-gray-500 uppercase font-medium">Feitas</span>
+            </div>
+            <div class="bg-bg-secondary p-3 rounded-2xl flex flex-col items-center justify-center text-center">
+              <span class="text-yellow-500 text-xl font-bold" id="statPending">0</span>
+              <span class="text-[10px] text-gray-500 uppercase font-medium">Pendentes</span>
+            </div>
+            <div class="bg-bg-secondary p-3 rounded-2xl flex flex-col items-center justify-center text-center">
+              <span class="text-blue-500 text-xl font-bold" id="statPoints">0</span>
+              <span class="text-[10px] text-gray-500 uppercase font-medium">XP</span>
+            </div>
           </div>
-          <div class="glass-card stat-card">
-            <div class="stat-value" id="statDone">0</div>
-            <div class="stat-label">Concluídas</div>
-          </div>
-          <div class="glass-card stat-card">
-            <div class="stat-value" id="statPending">0</div>
-            <div class="stat-label">Pendentes</div>
-          </div>
-          <div class="glass-card stat-card">
-            <div class="stat-value" id="statPoints">0</div>
-            <div class="stat-label">Pontos XP</div>
-          </div>
-        </div>
         <div class="dash-grid">
           <div class="glass-card today-tasks">
             <h3>📋 Tarefas de Hoje</h3>
@@ -271,6 +296,44 @@
         </div>
       </form>
     </div>
+  </div>
+
+  <!-- ===== MASCOT SETTINGS ===== -->
+  <style>
+    .mascot-container {
+      background: white;
+      border-radius: 50%;
+      overflow: hidden;
+      box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
+    }
+    .mascot-video {
+      mix-blend-mode: multiply;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transform: scale(1.15); /* Reduzido para dar mais borda branca */
+      filter: contrast(1.1) brightness(1.05);
+    }
+  </style>
+
+  <!-- ===== LOGIN MASCOT ===== -->
+  <div id="loginMascot" class="mascot-container fixed bottom-10 left-[-250px] w-28 h-28 z-[9999] pointer-events-none transition-all duration-[3000ms] ease-linear">
+    <video id="loginMascotVideo" src="Vídeo_Pronto_Sem_Asas.mp4" loop muted playsinline class="mascot-video"></video>
+  </div>
+
+  <!-- ===== APP MASCOT ===== -->
+  <div id="mascotContainer" class="mascot-container fixed bottom-0 left-[-250px] w-36 h-36 z-[9999] pointer-events-none transition-all duration-[4000ms] ease-linear">
+    <video id="mascotVideo" src="Vídeo_Pronto_Sem_Asas.mp4" loop muted playsinline class="mascot-video"></video>
+  </div>
+
+  <!-- ===== BOTTLE CAP ANIMATION (Success) ===== -->
+  <div id="capContainer" class="mascot-container fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-44 h-44 z-[9999] pointer-events-none hidden">
+    <video id="capVideo" src="Vídeo_de_Tampinha_de_Refrigerante.mp4" muted playsinline class="mascot-video"></video>
+  </div>
+
+  <!-- ===== BOTTLE CAP ANIMATION (Success) ===== -->
+  <div id="capContainer" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 z-[9999] pointer-events-none hidden">
+    <video id="capVideo" src="Vídeo_de_Tampinha_de_Refrigerante.mp4" muted playsinline style="filter: url(#remove-white);" class="w-full h-auto"></video>
   </div>
 
   <script src="js/app.js"></script>
