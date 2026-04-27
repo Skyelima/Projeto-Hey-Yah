@@ -69,6 +69,8 @@ function initLogin() {
     if (user === MOCK_USER.username && pass === MOCK_USER.password) {
       saveData('loggedIn', true);
       showApp();
+      // Bem-vindo: Comemoração com a tampinha!
+      setTimeout(() => triggerCapAnimation(), 600);
     } else {
       const el = document.getElementById('loginError');
       el.textContent = '❌ Credenciais inválidas. Tente novamente.';
@@ -362,6 +364,8 @@ document.getElementById('taskForm').addEventListener('submit', (e) => {
   closeTaskModal();
   renderTasks();
   refreshDashboard();
+  // Sucesso: Comemoração com a tampinha!
+  triggerCapAnimation();
 });
 
 // UC4 - Edit Task
