@@ -563,17 +563,13 @@ function triggerLoginMascot() {
   if (!container || !video) return;
 
   video.play();
-  container.style.left = window.innerWidth + 'px';
+  container.classList.add('mascot-run-anim');
 
   setTimeout(() => {
-    container.style.transition = 'none';
-    container.style.left = '-250px';
+    container.classList.remove('mascot-run-anim');
     video.pause();
     video.currentTime = 0;
-    setTimeout(() => {
-      container.style.transition = 'all 3000ms ease-linear';
-    }, 50);
-  }, 3500);
+  }, 4500);
 }
 
 function triggerMascot() {
@@ -582,16 +578,12 @@ function triggerMascot() {
   if (!container || !video) return;
 
   video.play();
-  container.style.left = window.innerWidth + 'px';
+  container.classList.add('mascot-run-anim');
 
   setTimeout(() => {
-    container.style.transition = 'none';
-    container.style.left = '-250px';
+    container.classList.remove('mascot-run-anim');
     video.pause();
     video.currentTime = 0;
-    setTimeout(() => {
-      container.style.transition = 'all 4000ms ease-linear';
-    }, 50);
   }, 4500);
 }
 

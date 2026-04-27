@@ -305,10 +305,25 @@
       border-radius: 50%;
       overflow: hidden;
       box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
+      position: fixed;
+      z-index: 2147483647; /* Máximo possível */
+      display: none; /* Escondido até disparar */
+    }
+    .mascot-run-anim {
+      display: block !important;
+      animation: mascot-cross 4s linear forwards;
+    }
+    @keyframes mascot-cross {
+      from { left: -200px; }
+      to { left: 100vw; }
     }
     @media (max-width: 768px) {
-      #loginMascot { bottom: 80px !important; }
-      #mascotContainer { bottom: 60px !important; }
+      #loginMascot { bottom: 80px; width: 100px; height: 100px; }
+      #mascotContainer { bottom: 60px; width: 120px; height: 120px; }
+    }
+    @media (min-width: 769px) {
+      #loginMascot { bottom: 40px; width: 128px; height: 128px; }
+      #mascotContainer { bottom: 0; width: 160px; height: 160px; }
     }
     .mascot-video {
       mix-blend-mode: multiply;
@@ -321,12 +336,12 @@
   </style>
 
   <!-- ===== LOGIN MASCOT ===== -->
-  <div id="loginMascot" class="mascot-container fixed bottom-10 left-[-250px] w-28 h-28 z-[9999] pointer-events-none transition-all duration-[3000ms] ease-linear">
+  <div id="loginMascot" class="mascot-container">
     <video id="loginMascotVideo" src="Vídeo_Pronto_Sem_Asas.mp4" loop muted playsinline class="mascot-video"></video>
   </div>
 
   <!-- ===== APP MASCOT ===== -->
-  <div id="mascotContainer" class="mascot-container fixed bottom-0 left-[-250px] w-36 h-36 z-[9999] pointer-events-none transition-all duration-[4000ms] ease-linear">
+  <div id="mascotContainer" class="mascot-container">
     <video id="mascotVideo" src="Vídeo_Pronto_Sem_Asas.mp4" loop muted playsinline class="mascot-video"></video>
   </div>
 
