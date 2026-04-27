@@ -123,6 +123,12 @@ function initMobile() {
     document.getElementById('sidebar').classList.add('-translate-x-full');
     document.getElementById('sidebarOverlay').classList.remove('active');
   });
+  
+  // Mobile: Force play on first touch to bypass autoplay restrictions
+  document.addEventListener('touchstart', () => {
+    document.getElementById('loginMascotVideo')?.play();
+    document.getElementById('mascotVideo')?.play();
+  }, { once: true });
 }
 
 // ===== REFRESH ALL =====
