@@ -61,7 +61,7 @@ Como usuário, quero receber conselhos personalizados sobre a minha rotina, base
 - **FR-002**: O sistema MUST armazenar de forma persistente os dados de `UserData`, `Pet` e `Tasks` associados à conta do usuário.
 - **FR-003**: O sistema MUST fornecer endpoints (API) para operações CRUD de tarefas e atualização do progresso gamificado (XP).
 - **FR-004**: O sistema MUST proteger qualquer chamada a APIs de Inteligência Artificial externas, mantendo as chaves privadas no lado do servidor.
-- **FR-005**: O sistema MUST [NEEDS CLARIFICATION: Qual linguagem ou tecnologia preferimos para esse backend simples? Node.js (combina com JS do front), Python (bom para IA) ou um BaaS como Firebase/Supabase? (Lembrando que o spec não deve forçar tech, mas o tipo de arquitetura muda o escopo)].
+- **FR-005**: O sistema MUST ser implementado utilizando Node.js (Express) e SQLite para manter a simplicidade e permitir fácil integração com a lógica atual em JavaScript.
 
 ### Key Entities
 
