@@ -461,3 +461,21 @@ input,select,textarea { font-family:var(--font-main); }
 .mobile-header { display:none; }
 .sidebar-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:99; }
 .sidebar-overlay.active { display:block; }
+
+/* ========== GAMIFICATION PET ========== */
+@keyframes jump-anim {
+  0% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-20px) scale(1.1); }
+  100% { transform: translateY(0) scale(1); }
+}
+
+.jump-anim {
+  animation: jump-anim 0.5s ease;
+}
+
+#petBalloon {
+  font-family: var(--font-main);
+  background-color: #f0fdf4; /* Light green pastel */
+  color: #166534; /* Darker green */
+  border-color: #bbf7d0;
+}

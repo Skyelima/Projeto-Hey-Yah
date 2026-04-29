@@ -284,6 +284,11 @@ function toggleTaskStatus(id) {
     userData.nivel = Math.floor(userData.pontos / 100) + 1;
     saveUserData(userData);
     document.getElementById('userLevel').textContent = '🏆 Nível ' + userData.nivel;
+    
+    // US1: Evolução do Pet Virtual
+    if (typeof window.addXP === 'function') {
+      window.addXP(points);
+    }
   }
 
   renderTasks();
@@ -440,6 +445,11 @@ function generateAISuggestions() {
 
     if (['12x36','plantao'].includes(schedule)) {
       suggestions.push({ title: '⚠️ Alerta de Escala (RN02)', text: 'Em dia de plantão, evite tarefas de alta densidade cognitiva após 8 horas de trabalho contínuo.', tag: 'Regra RN02' });
+    }
+
+    // US3: Empatia se o usuário tem muitas tarefas pendentes (possível burnout)
+    if (pending.length >= 5) {
+      suggestions.push({ title: '💙 O Pinguim diz:', text: 'Estou vendo que há muitas tarefas acumuladas. Respire fundo, faça pausas e não hesite em adiar o que não é urgente.', tag: 'Empatia' });
     }
 
     document.getElementById('aiSuggestionsList').innerHTML = suggestions.map(s => `
